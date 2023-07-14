@@ -1,0 +1,22 @@
+{% for post in all_tag_post %}
+	<li class="list-group-post">
+        <div class="row">
+            <div class="main-title col-12">
+        <a href="{% url 'app:detail' post.pk %}">{{ post.title }}{{ post.tags__name__in }}</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="user-post col-2">
+                <a href="{% url 'app:user_detail' user.user_name %}">{{ post.post_user }}</a>
+            </div>
+            <div class="date-list col-8">
+                {% for tag in post.tags.all %}
+                    <a href="{% url 'app:tags' tag %}">{{ tag }}</a>
+                {% endfor %}            
+            </div>
+            <div class="date-list col-2">
+                {{post.created_at|date:"Y/m/d H:i"}}
+            </div>
+        </div>
+    </li>
+	{% endfor %}

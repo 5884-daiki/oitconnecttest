@@ -1,0 +1,44 @@
+{% extends 'reply.html' %}
+{% load static %}
+
+{% block customcss %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock customcss %}
+
+{% block content %}
+<div class="container">
+    <div class="alert alert-success" role="alert">
+        <p>{{ object.category }}</p>
+        <p>投稿者：{{ object.user }}</p>
+        <p>内容：{{ object.content }}</p>
+        <p>日付：{{ object.created_at }}</p>
+
+        {% if object.image %}
+        <img src="{{ object.image.url }}" alt="Post Image" class="img-fluid">
+        {% endif %}
+        
+        {% for tag in object.tags.all %}
+            <li> Tags:{{ tag.name }} </li>
+        {% endfor %}
+
+        {% if request.user in object.like.all %}
+            <a href="{% url 'like-detail' object.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart"></i></a>{{ object.like.count }}
+        {% else %}
+            <a href="{% url 'like-detail' object.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i></a>{{ object.like.count }}
+        {% endif %}
+
+        {% if object.user == request.user %}
+            <a href="{% url 'update' object.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">編集</a>
+            <a href="{% url 'delete' object.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">削除</a>
+        {% endif %}
+    </div>
+</div>
+
+<h1>{{ object.title }}</h1>
+<p>{{ object.content }}</p>
+
+
+<a class="nav-link btn btn-success" href="{% url 'replycreate' object.pk  %}" role="button">返信</a>
+<a class="nav-link" href="{% url 'reply-list' object.pk %}">返信一覧</a>
+
+

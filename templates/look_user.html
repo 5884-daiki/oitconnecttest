@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="alert alert-success" role="alert">
+        <strong><hn>{{ user.username }}</hn></strong>
+        <p></p>
+        <p>Age: {{ age }}</p>
+        {% if user.course %}
+        <p>学科: {{ user.course }}科</p>
+        {% else %}
+        <p>学科: 未設定</p>
+        {% endif %}
+        {% if user.circle %}
+        <p>サークル: {{ user.circle }}所属</p>
+        {% else %}
+        <p>サークル: 無所属</p>
+        {% endif %}
+        <p>趣味: {{ user.hobby }}</p>
+        <p>自己紹介: {{ user.introduce }}</p>
+
+        <table>
+            <tr><th>Contact</th></tr>
+            {% if user.url_ins or user.url_twi or user.url_oth %}
+                {% if user.url_ins %}
+                <tr><td>Instagram </td><td><a href="{{ user.url_ins }}">リンク</a></td></tr>
+                {% endif %}
+                {% if user.url_twi %}
+                <tr><td>Twitter </td><td><a href="{{ user.url_twi }}">リンク</a></td></tr>
+                {% endif %}
+                {% if user.url_oth %}
+                <tr><td>その他 </td><td><a href="{{ user.url_oth }}">リンク</a></td></tr>
+                {% endif %}
+            {% else %}
+            <td>SNS未登録</td>
+            {% endif %}
+        </table>
+<!--＝＝＝＝＝＝＝＝＝＝＝＝＝編集＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝-->
+        {% if items %}
+        <br><br><br>
+        <strong><hn>{{ user.username }}の過去の投稿</hn></strong>
+        {% for item in items %}
+        <div class="alert alert-success" role="alert">
+            <p>{{item.category}}</p>
+            <p>タイトル：<a href="{% url 'detail' item.pk %}">{{item.title}}</a></p>
+            <p>内容：{{item.content}}</p>
+            <p>日付:{{item.created_at}}</p>
+            {% for tag in item.tags.all %}
+                <li> Tags:{{ tag.name }} </li>
+            {% endfor %}
+            {% if item.user == request.user %}
+            <a href="{% url 'update' item.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">編集</a>
+            <a href="{% url 'delete' item.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">削除</a>
+            {% else %}
+             {% if item.user in connection.0.following.all %}
+             <a href="{% url 'follow-user' item.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー解除</a>
+             {% else %}
+             <a href="{% url 'follow-user' item.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー</a>
+             {% endif %}
+             {% if request.user in item.like.all %}
+             <a href="{% url 'like-user' item.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart"></i></a>{{item.like.count}}
+             {% else %}
+             <a href="{% url 'like-user' item.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i></a>{{item.like.count}}
+             {% endif %}
+             {% endif %}
+        </div>
+        {% endfor %}
+        {% endif %}
+ <!--＝＝＝＝＝＝＝＝＝＝＝＝＝編集＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝-->       
+        
+        <p>...</p>
+    </div>
+</div>
+{% endblock content %}

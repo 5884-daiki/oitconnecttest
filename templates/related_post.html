@@ -1,0 +1,48 @@
++<!-- liked_posts.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block customcss %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock customcss %}
+{% block content %}
+
+{% if related_post %}
+    
+    <div class="container mt-3">
+      {% for post in related_post %}
+      <div class="alert alert-success" role="alert">
+        <p>{{post.category}}</p>
+        <p>タイトル：<a href="{% url 'detail' post.pk %}">{{post.title}}</a></p>
+        <p>投稿者：{{post.user.username}}</p>  
+        <p>内容：{{post.content}}</p>
+        <p>日付：{{post.created_at}}</p>
+        {% for tag in post.tags.all %}
+            <li> Tags:{{ tag.name }} </li>
+        {% endfor %}
+        {% if request.user in post.like.all %}
+        <a href="{% url 'like-home' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart"></i></a>{{post.like.count}}
+        {% else %}
+        <a href="{% url 'like-home' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i></a>{{post.like.count}}
+        {% endif %}
+        {% if post.user == request.user %}
+        <a href="{% url 'update' post.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">編集</a>
+        <a href="{% url 'delete' post.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">削除</a>
+        {% else %}
+        {% if post.user in connection.0.following.all %}
+        <a href="{% url 'follow-home' post.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー解除</a>
+        {% else %}
+        <a href="{% url 'follow-home' post.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー</a>
+        {% endif %}
+        
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      
+    </div>
+{% else %}
+    <p>いいねした投稿はありません</p>
+{% endif %}
+{% endblock %}

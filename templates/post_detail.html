@@ -1,0 +1,19 @@
+<!-- 投稿詳細表示部分 -->
+
+<!-- 返信一覧表示 -->
+{% for reply in replies %}
+    <div>
+        <p>{{ reply.user.username }}</p>
+        <p>{{ reply.content }}</p>
+    </div>
+{% empty %}
+    <p>No replies yet.</p>
+{% endfor %}
+
+<!-- 返信フォーム -->
+<form method="post" action="{% url 'replycreate' pk=post.pk %}">
+    {% csrf_token %}
+    {{ form.content }}
+    <button type="submit">返信する</button>
+</form>
+
